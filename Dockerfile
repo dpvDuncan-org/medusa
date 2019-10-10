@@ -4,7 +4,7 @@ FROM ${BASE_IMAGE_PREFIX}alpine
 
 # see hooks/post_checkout
 ARG ARCH
-COPY qemu-${ARCH}-static /usr/bin
+COPY .gitignore qemu-${ARCH}-static* /usr/bin/
 
 # see hooks/build and hooks/.config
 ARG BASE_IMAGE_PREFIX
@@ -30,3 +30,13 @@ EXPOSE 8081
 VOLUME /config
 
 CMD ["python3", "/opt/medusa/start.py", "--nolaunch", "--datadir", "/config"]
+
+# annotation labels according to
+# https://github.com/opencontainers/image-spec/blob/v1.0.1/annotations.md#pre-defined-annotation-keys
+LABEL org.opencontainers.image.title="Medusa"
+LABEL org.opencontainers.image.description="Image to run Medusa"
+LABEL org.opencontainers.image.url="https://github.com/dpvDuncan/medusa"
+LABEL org.opencontainers.image.documentation="https://github.com/dpvDuncan/medusa#readme"
+LABEL org.opencontainers.image.version="develop"
+LABEL org.opencontainers.image.licenses=""
+LABEL org.opencontainers.image.authors="dpvDuncan"
