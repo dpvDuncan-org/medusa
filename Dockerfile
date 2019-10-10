@@ -1,4 +1,18 @@
-FROM alpine
+# see hooks/build and hooks/.config
+ARG BASE_IMAGE_PREFIX
+FROM ${BASE_IMAGE_PREFIX}alpine
+
+# see hooks/post_checkout
+ARG ARCH
+COPY qemu-${ARCH}-static /usr/bin
+
+# see hooks/build and hooks/.config
+ARG BASE_IMAGE_PREFIX
+FROM ${BASE_IMAGE_PREFIX}alpine
+
+# see hooks/post_checkout
+ARG ARCH
+COPY qemu-${ARCH}-static /usr/bin
 
 RUN apk update && apk upgrade && \
     apk add --no-cache python3 ffmpeg mediainfo && \
