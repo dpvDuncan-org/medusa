@@ -1,1 +1,1 @@
-# rpi-medusa
+# medusa
