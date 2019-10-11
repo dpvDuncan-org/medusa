@@ -21,7 +21,6 @@ RUN apk update && apk upgrade && \
     curl -o /tmp/medusa.tar.gz -L "https://github.com/pymedusa/Medusa/archive/develop.tar.gz" && \
     tar xf /tmp/medusa.tar.gz -C /opt/medusa --strip-components=1 && \
     rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* && \
-    ls -hal /opt/medusa && \
     chmod 777 /opt/medusa -R && \
     apk del .build-dependencies
 
@@ -30,13 +29,3 @@ EXPOSE 8081
 VOLUME /config
 
 CMD ["python3", "/opt/medusa/start.py", "--nolaunch", "--datadir", "/config"]
-
-# annotation labels according to
-# https://github.com/opencontainers/image-spec/blob/v1.0.1/annotations.md#pre-defined-annotation-keys
-LABEL org.opencontainers.image.title="Medusa"
-LABEL org.opencontainers.image.description="Image to run Medusa"
-LABEL org.opencontainers.image.url="https://github.com/dpvDuncan/medusa"
-LABEL org.opencontainers.image.documentation="https://github.com/dpvDuncan/medusa#readme"
-LABEL org.opencontainers.image.version="develop"
-LABEL org.opencontainers.image.licenses=""
-LABEL org.opencontainers.image.authors="dpvDuncan"
