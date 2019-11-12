@@ -1,28 +1,22 @@
-# see hooks/build and hooks/.config
-ARG BASE_IMAGE_PREFIX
-FROM ${BASE_IMAGE_PREFIX}alpine
+FROM multiarch/qemu-user-static as qemu
 
-# see hooks/post_checkout
-ARG ARCH
-COPY .gitignore qemu-${ARCH}-static* /usr/bin/
+FROM alpine
 
-# see hooks/build and hooks/.config
-ARG BASE_IMAGE_PREFIX
-FROM ${BASE_IMAGE_PREFIX}alpine
+COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
-# see hooks/post_checkout
-ARG ARCH
-COPY qemu-${ARCH}-static /usr/bin
+RUN apk update && apk upgrade
+RUN apk add --no-cache python3 ffmpeg mediainfo
+RUN apk add --no-cache --virtual=.build-dependencies ca-certificates curl
+RUN mkdir -p /opt/medusa
+RUN curl -o - \
+        -L "https://github.com/pymedusa/Medusa/archive/develop.tar.gz" \
+        | tar xz -C /opt/medusa \
+                --strip-components=1
+RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
+RUN chmod 777 /opt/medusa -R
+RUN apk del .build-dependencies
 
-RUN apk update && apk upgrade && \
-    apk add --no-cache python3 ffmpeg mediainfo && \
-    apk add --no-cache --virtual=.build-dependencies ca-certificates curl && \
-    mkdir -p /opt/medusa && \
-    curl -o /tmp/medusa.tar.gz -L "https://github.com/pymedusa/Medusa/archive/develop.tar.gz" && \
-    tar xf /tmp/medusa.tar.gz -C /opt/medusa --strip-components=1 && \
-    rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* && \
-    chmod 777 /opt/medusa -R && \
-    apk del .build-dependencies
+RUN rm -rf /usr/bin/qemu-*-static
 
 # ports and volumes
 EXPOSE 8081
