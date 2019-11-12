@@ -6,8 +6,14 @@ source hooks/.config
 
 echo "✅ Launching Docker in Docker, to have experimental features"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-docker stop docker_daemon
-docker rm docker_daemon
+if [ "$(docker ps | grep 'docker_daemon')" ]
+then
+  docker stop docker_daemon
+fi
+if [ "$(docker ps -a | grep 'docker_daemon')" ]
+then
+  docker rm docker_daemon
+fi
 
 docker run --privileged \
         --name docker_daemon \
