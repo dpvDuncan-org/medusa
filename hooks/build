@@ -17,7 +17,7 @@ fi
 
 docker run --privileged \
         --name docker_daemon \
-        -v ~/.docker/config.json:/root/.docker/config.json \
+        -v ~/.docker:/root/.docker \
         -v ${PWD}:/build \
         -d docker:dind --experimental
 
