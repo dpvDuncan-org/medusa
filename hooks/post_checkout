@@ -19,10 +19,3 @@ mkdir -p ~/.docker
 jq --null-input --argjson auths "$DOCKERCFG" '. + {auths: $auths}' | \
 jq --arg experimental enabled '. + {experimental: $experimental}' | \
 sponge ~/.docker/config.json
-
-echo "✅ Verify config.json file"
-echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-cd ~/.docker
-pwd
-ls -hal
-cat config.json
