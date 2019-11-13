@@ -4,50 +4,7 @@ set -eu
 echo "🔵 build"
 source hooks/.config
 
-echo "✅ Launching Docker in Docker, to have experimental features"
-echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-if [ "$(docker ps | grep 'docker_daemon')" ]
-then
-  docker stop docker_daemon
-fi
-if [ "$(docker ps -a | grep 'docker_daemon')" ]
-then
-  docker rm docker_daemon
-fi
-
-docker run --privileged \
-        --name docker_daemon \
-        -v ~/.docker:/root/.docker \
-        -v ${PWD}:/build \
-        -d docker:dind --experimental
-
-sleep 30
-
-echo "✅ Check Docker in Docker is running"
-echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
-docker exec docker_daemon mkdir -p /root/.docker
-docker cp ~/.docker/config.json docker_daemon:/root/.docker/config.json
-
-i=0
-
-while [ ! "$(docker exec docker_daemon ps aux | grep containerd)" ]
-do
-  echo "🔵 loop ${i}"
-  docker logs --tail 5 docker_daemon
-  sleep 10 
-  i=`expr $i + 1`
-  if [ $i -gt 6 ]
-  then
-    echo !!!!!!!!Timeout!!!!!!!
-    docker logs docker_daemon
-    exit 1
-  fi
-done
-
-
-docker exec docker_daemon docker ps -a
-
-echo "✅ Will build the following architectures: $build_architectures"
+echo "✅ Will build the following architectures: $(printf \"%s \" \"${build_architectures[@]}\")"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
 for arch in ${build_architectures[@]}; do
@@ -55,17 +12,18 @@ for arch in ${build_architectures[@]}; do
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
   echo 'docker exec docker_daemon docker build \
-    --no-cache \
     --squash \
     --platform='${arch}' \
+    --build-arg BASE_IMAGE_PREFIX='${base_image_prefix_map[${arch}]}' \
+    --build-arg ARCH='${arch}' \
     --file /build/$DOCKERFILE_PATH \
     --tag "'${IMAGE_NAME}'-'${arch}'"  \
     /build'
 
   docker exec docker_daemon docker build \
-    --no-cache \
     --squash \
     --platform=${arch} \
+    --build-arg BASE_IMAGE_PREFIX=${base_image_prefix_map[${arch}]} \
     --build-arg ARCH=${arch} \
     --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
