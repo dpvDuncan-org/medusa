@@ -35,7 +35,7 @@ do
   echo "🔵 loop ${i}"
   docker logs --tail 5 docker_daemon
   sleep 10 
-  ((i++))
+  i=`expr $i + 1`
   if [ $i -gt 6 ]
   then
     echo !!!!!!!!Timeout!!!!!!!
@@ -53,6 +53,14 @@ echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯�
 for arch in ${build_architectures[@]}; do
   echo "✅ building $arch"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
+
+  echo 'docker exec docker_daemon docker build \
+    --no-cache \
+    --squash \
+    --platform='${arch}' \
+    --file /build/$DOCKERFILE_PATH \
+    --tag "'${IMAGE_NAME}'-'${arch}'"  \
+    /build'
 
   docker exec docker_daemon docker build \
     --no-cache \
