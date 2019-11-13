@@ -21,14 +21,29 @@ docker run --privileged \
         -v ${PWD}:/build \
         -d docker:dind --experimental
 
-sleep 10
+sleep 30
 
 echo "✅ Check Docker in Docker is running"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 docker exec docker_daemon mkdir -p /root/.docker
 docker cp ~/.docker/config.json docker_daemon:/root/.docker/config.json
-docker logs docker_daemon
-docker exec docker_daemon ps aux
+
+i="0"
+
+while [ ! $(docker exec docker_daemon ps aux | grep containerd) ]
+do
+  docker logs --tail 5 docker_daemon
+  sleep 10 
+  ((i++))
+  if [ $i -gt 6 ]
+  then
+    echo !!!!!!!!Timeout!!!!!!!
+    docker logs docker_daemon
+    exit 1
+  fi
+done
+
+
 docker exec docker_daemon docker ps -a
 
 echo "✅ Will build the following architectures: $build_architectures"
