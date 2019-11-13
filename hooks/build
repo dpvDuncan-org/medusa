@@ -11,11 +11,13 @@ for arch in ${build_architectures[@]}; do
   echo "✅ building $arch"
   echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 
+  BASE_IMAGE_PREFIX="${base_image_prefix_map[${arch}]}"
+
   echo 'docker exec docker_daemon docker build \
     --squash \
     --platform='${arch}' \
     --no-cache \
-    --build-arg BASE_IMAGE_PREFIX='${base_image_prefix_map[${arch}]}' \
+    --build-arg BASE_IMAGE_PREFIX='${BASE_IMAGE_PREFIX}' \
     --build-arg ARCH='${arch}' \
     --file /build/$DOCKERFILE_PATH \
     --tag "'${IMAGE_NAME}'-'${arch}'"  \
@@ -25,7 +27,7 @@ for arch in ${build_architectures[@]}; do
     --squash \
     --platform=${arch} \
     --no-cache \
-    --build-arg BASE_IMAGE_PREFIX=${base_image_prefix_map[${arch}]} \
+    --build-arg BASE_IMAGE_PREFIX=${BASE_IMAGE_PREFIX} \
     --build-arg ARCH=${arch} \
     --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
