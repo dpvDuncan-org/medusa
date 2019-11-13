@@ -32,6 +32,7 @@ i="0"
 
 while [ ! $(docker exec docker_daemon ps aux | grep containerd) ]
 do
+  echo "🔵 loop ${i}"
   docker logs --tail 5 docker_daemon
   sleep 10 
   ((i++))
