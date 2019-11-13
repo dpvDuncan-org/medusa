@@ -1,6 +1,7 @@
 FROM multiarch/qemu-user-static as qemu
 
-FROM alpine
+ARG ARCH
+FROM --platform=$ARCH alpine
 
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 

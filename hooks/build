@@ -66,6 +66,7 @@ for arch in ${build_architectures[@]}; do
     --no-cache \
     --squash \
     --platform=${arch} \
+    --build-arg ARCH=${arch} \
     --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
     /build
