@@ -27,6 +27,8 @@ echo "✅ Check Docker in Docker is running"
 echo "⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯⎯"
 docker exec docker_daemon mkdir -p /root/.docker
 docker cp ~/.docker/config.json docker_daemon:/root/.docker/config.json
+docker logs docker_daemon
+docker exec docker_daemon ps aux
 docker exec docker_daemon docker ps -a
 
 echo "✅ Will build the following architectures: $build_architectures"
