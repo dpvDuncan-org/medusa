@@ -1,9 +1,18 @@
 FROM multiarch/qemu-user-static as qemu
 
 ARG BASE_IMAGE_PREFIX
+ARG ARCH
 FROM ${BASE_IMAGE_PREFIX}alpine
 
+ARG BASE_IMAGE_PREFIX
+ARG ARCH
+
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
+
+RUN echo "Variables: \
+                BASE_IMAGE_PREFIX=${BASE_IMAGE_PREFIX} \
+                ARCH=${ARCH} \
+                env=${env}"
 
 RUN apk update && apk upgrade
 RUN apk add --no-cache python3 ffmpeg mediainfo
