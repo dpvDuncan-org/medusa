@@ -1,10 +1,10 @@
 ARG BASE_IMAGE_PREFIX
-ARG ARCH
-#FROM multiarch/qemu-user-static as qemu
+
+FROM multiarch/qemu-user-static as qemu
 
 FROM ${BASE_IMAGE_PREFIX}alpine
 
-#COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
+COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
 RUN apk update && apk upgrade
 RUN apk add --no-cache python3 ffmpeg mediainfo
@@ -18,7 +18,7 @@ RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/*
 RUN chmod 777 /opt/medusa -R
 RUN apk del .build-dependencies
 
-#RUN rm -rf /usr/bin/qemu-*-static
+RUN rm -rf /usr/bin/qemu-*-static
 
 # ports and volumes
 EXPOSE 8081
