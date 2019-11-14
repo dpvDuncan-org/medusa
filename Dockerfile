@@ -1,11 +1,10 @@
+ARG BASE_IMAGE_PREFIX
+ARG ARCH
 FROM multiarch/qemu-user-static as qemu
 
 ARG BASE_IMAGE_PREFIX
 ARG ARCH
 FROM ${BASE_IMAGE_PREFIX}alpine
-
-ARG BASE_IMAGE_PREFIX
-ARG ARCH
 
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
