@@ -1,8 +1,8 @@
 ARG BASE_IMAGE_PREFIX
 ARG ARCH
-FROM --platform=arm64 multiarch/qemu-user-static as qemu
+FROM multiarch/qemu-user-static as qemu
 
-FROM --platform=${ARCH} alpine
+FROM ${BASE_IMAGE_PREFIX}alpine
 
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
