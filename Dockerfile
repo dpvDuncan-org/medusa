@@ -19,7 +19,7 @@ RUN curl -o - \
         -L "https://github.com/pymedusa/Medusa/archive/develop.tar.gz" \
         | tar xz -C /opt/medusa \
                 --strip-components=1
-RUN chmod 777 /opt/medusa -R
+RUN chmod 777 /opt/medusa /start -R
 RUN apk del .build-dependencies
 
 RUN rm -rf /tmp/* /var/lib/apt/lists/* /var/tmp/* /usr/bin/qemu-*-static
