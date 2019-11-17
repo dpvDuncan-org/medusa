@@ -13,7 +13,7 @@ for arch in ${build_architectures[@]}; do
 
   docker exec docker_daemon docker build \
     --squash \
-    --platform=${docker_to_manifest_map[${arch}]} \
+    --platform=linux/${docker_to_manifest_map[${arch}]} \
     --build-arg ARCH=${arch} \
     --file /build/$DOCKERFILE_PATH \
     --tag "${IMAGE_NAME}-${arch}"  \
