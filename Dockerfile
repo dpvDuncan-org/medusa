@@ -2,7 +2,7 @@ ARG BASE_IMAGE_PREFIX
 
 FROM multiarch/qemu-user-static as qemu
 
-FROM ${BASE_IMAGE_PREFIX}alpine
+FROM alpine
 
 COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
