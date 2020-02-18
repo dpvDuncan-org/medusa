@@ -16,4 +16,4 @@ then
         USERNAME=medusa
 fi
 
-su - $USERNAME -c 'python3 /opt/medusa/start.py --nolaunch --datadir /config'
+su -g $GROUPNAME $USERNAME -c 'python3 /opt/medusa/start.py --nolaunch --datadir /config'
