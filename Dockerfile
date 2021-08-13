@@ -1,10 +1,6 @@
 ARG BASE_IMAGE_PREFIX
 
-FROM multiarch/qemu-user-static as qemu
-
 FROM ${BASE_IMAGE_PREFIX}alpine
-
-COPY --from=qemu /usr/bin/qemu-*-static /usr/bin/
 
 ENV PUID=0
 ENV PGID=0
@@ -22,7 +18,7 @@ RUN curl -o - \
 RUN chmod -R 777 /start.sh /opt/medusa
 RUN apk del .build-dependencies
 
-RUN rm -rf /tmp/* /var/cache/apk/* /usr/bin/qemu-*-static
+RUN rm -rf /tmp/* /var/cache/apk/*
 
 # ports and volumes
 EXPOSE 8081
